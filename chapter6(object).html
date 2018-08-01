@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>原型与对象</title>
+</head>
+<body>
+    
+</body>
+<script>
+    //组合使用构造函数 & 原型
+    function Person(name,age,job){
+        this.name = name;
+        this.age = age;
+        this.job = job;
+        this.friends = ["shelby","court"];
+    }
+    Person.prototype={
+        constructor:Person,
+        sayName:function(){
+            console.log("sayname:"+this.name);
+        }
+    }
+    var person1 = new Person("nicholas",29,"software engineer");
+    var person2 = new Person("Greg",27,"doctor");
+
+    person1.friends.push("Van");
+    console.log("person1.friends",person1.friends);
+    console.log("person2.friends:",person2.friends);
+    console.log(person1.friends === person2.friends);
+    console.log(person1.sayName === person2.sayName);
+    //动态原型
+    function Person_1(name,age,job){
+        this.name = name;
+        this.age = age;
+        this.job = job;
+        if(typeof this.sayName != "function"){
+            Person_1.prototype.sayName = function(){
+                console.log("now dynamic add sayname");
+            }
+        }
+    }
+    var person3 = new Person_1("noso",29,"software engineer");
+    person3.sayName();
+
+    //寄生构造函数  (在原有构造上包装了一层)
+    function SpecialArray(){
+        var values =new Array();
+        values.push.apply(values,arguments);
+        valus.toPipedString = function(){
+            return this.join("|");
+        }
+        return values;
+    }
+    var colors = new SpecialArray("red","blue","yello");
+    console.log("special array,topipedstring():",colors.toPipedString());
+    
+</script>
+</html>
