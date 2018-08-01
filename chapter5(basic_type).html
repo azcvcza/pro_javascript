@@ -37,6 +37,46 @@
     if(pattern_2.test(text_2)){
         console.log("text2:"+text2+" | test:"+pattern_2.test(text_2));
     }
-    
+    //5.5 function
+    //arguments in function
+    function factorial(num){
+        if(num<=1){
+            return 1;
+        }
+        else{
+            return num*factorial(num-1);
+        }
+    }
+    function factorial_1(num){
+        if(num<=1){
+            return 1;
+        }
+        else{
+            return num*arguments.callee(num-1);
+        }
+    }
+    //this in function
+    window.color = "red";
+    var o = {color:"blue"};
+    function log_color(){
+        console.log("this in function,log_color:"+this.color);
+    }
+    log_color();//get 'red';
+    o.log_color = log_color();
+    o.log_color();//get 'blue';
+    //caller compared to this;
+    function outer(){
+        inner();
+    }
+    function inner(){
+        console.log("inner.caller:"+inner.caller);
+    }
+
+    function outer_1(){
+        inner_1();
+    }
+    function inner_1(){
+        console.log("inner_1.caller:"+arguments.callee.caller);
+    }
 </script>
 </html>
