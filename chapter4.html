@@ -23,5 +23,36 @@
     }
     changeColor();
     console.log("4.2,color is now:"+color);
+
+    var color_2 = "blue";
+    function changeColor2(){
+        var anothercolor="red";
+        function swapColor(){
+            var tempcolor = anothercolor;
+            anothercolor = color;
+            color= tempcolor;
+        }
+        swapColor();
+    }
+    changeColor2();
+    console.log("4.2,color2,color is now:"+color);
+    //4.3.2 引用计数
+    function problem(){
+        var oA = new Object();
+        var oB = new Object();
+        oA.someob = oB;
+        oB.anotherob = oA;
+    }
+
+    //4.3.4 管理内存
+    function createPerson(name){
+        var localPerson = new Object();
+        localPerson.name = name;
+        return localPerson;
+
+    }
+    var g_person = createPerson("nicolas");
+    g_person = null;//手动清除内存
+    
 </script>
 </html>
