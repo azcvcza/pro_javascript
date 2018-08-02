@@ -98,7 +98,29 @@
     instance2.sayName();
     instance2.sayAge();
 
-    
+    //6.3.6 寄生组合继承
+    function inheritPrototype(subT,superT){
+        var b_prototype = object(superT.prototype);//创建对象
+        b_prototype.constructor = subT;//增强对象
+        subT.prototype = b_prototype;//指定对象
+    }
+
+    function SuperType_1(name){
+        this.name = name;
+        this.colors=["s","p","e"];
+    }
+    SuperType_1.prototype.sayName = function(){
+        console.log("SuperType_1.sayName:"+this.name);
+    }
+    function SubType_1(name,age){
+        SuperType.call(this,name);
+        this.age =age;
+    }
+    inheritPrototype(SubType_1,SuperType_1);
+    SubType_1.prototype.sayAge = function(){
+        console.log("SubType_1.sayAge:"+this.age);
+    }
+
 
 
 </script>
