@@ -10,6 +10,48 @@
     
 </body>
 <script>
-    
+    //7.2 闭包
+    function createFunctions(){
+        var result = new Array();
+        for (var i=0;i<10;i++){
+            result[i] = function(num){
+                return function(){
+                    return num;
+                }
+            }(i);
+        }
+        return result;
+    }//i from 0-9;
+
+    //7.4.1 静态私有变量
+    (function(){
+        var private_var = 10;
+        function private_function(){
+            return false;
+        }
+        MyObject = function(){
+
+        }
+        MyObject.prototype.publicMethod = function(){
+            private_var++;
+            return private_function;
+        }
+    })();
+
+    //7.4.2 module
+    var singleton = function(){
+        function privateFunction(){return false;};
+        var p_var = 10;
+        var object = new CustomType();
+
+        object.publicProperty = true;
+
+        object.publicMethod = function(){
+            p_var ++;
+            return privateFunction();
+        }
+        return object;
+
+    }();
 </script>
 </html>
