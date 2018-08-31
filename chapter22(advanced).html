@@ -1,12 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Javascript 高级技巧</title>
 </head>
+
 <body>
-    
+
 </body>
+<script>
+   
+    //1.checktype
+    function isArray(value) {
+
+        return Object.prototype.toString.call(value) == "[object Array]";
+
+    }
+    //check function make not work in ie,since the com object
+    function isFunction(value) {
+        return Object.prototype.toString.call(value) == "[object Function]";
+    }
+
+    function isRegExp(value) {
+        return Object.prototype.toString.call(value) == "[object RegExp]";
+
+    }
+    var isNavtiveJSON = window.JSON && Object.prototype.toString.call(JSON) == "[object JSON]";
+     //1.test 
+     function check_type(value, func) {
+        console.log(value,functionName(func) ,func(value));
+    }
+
+    function functionName(fun) {
+        var ret = fun.toString();
+        ret = ret.substr('function '.length);
+        ret = ret.substr(0, ret.indexOf('('));
+        return ret;
+    }
+    var aaa = ["1", "2", "3"];
+    var aaa1 = [];
+    var aaa2 = [{}];
+    function a(){};
+    var a1 = function(){
+        console.log("hello world");
+    }
+    check_type(aaa, isArray);
+    check_type(aaa1, isArray);
+    check_type(aaa2, isArray);
+    check_type(a,isFunction);
+    check_type(a1,isFunction);
+</script>
+
 </html>
