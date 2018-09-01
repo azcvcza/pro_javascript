@@ -12,7 +12,6 @@
 
 </body>
 <script>
-   
     //1.checktype
     function isArray(value) {
 
@@ -29,9 +28,9 @@
 
     }
     var isNavtiveJSON = window.JSON && Object.prototype.toString.call(JSON) == "[object JSON]";
-     //1.test 
-     function check_type(value, func) {
-        console.log(value,functionName(func) ,func(value));
+    //1.test 
+    function check_type(value, func) {
+        console.log(value, functionName(func), func(value));
     }
 
     function functionName(fun) {
@@ -43,56 +42,119 @@
     var aaa = ["1", "2", "3"];
     var aaa1 = [];
     var aaa2 = [{}];
-    function a(){};
-    var a1 = function(){
+
+    function a() {};
+    var a1 = function () {
         console.log("hello world");
     }
     check_type(aaa, isArray);
     check_type(aaa1, isArray);
     check_type(aaa2, isArray);
-    check_type(a,isFunction);
-    check_type(a1,isFunction);
+    check_type(a, isFunction);
+    check_type(a1, isFunction);
     //2. 安全构造函数 in js
-    function Person(name,age,job){
-        if( this instanceof Person){
-            this.name =name;
+    function Person(name, age, job) {
+        if (this instanceof Person) {
+            this.name = name;
             this.age = age;
             this.job = job;
-        }
-        else{
-            return new Person(name,age,job);
+        } else {
+            return new Person(name, age, job);
         }
     }
-    var person1 = Person("111",29,"se");
-    console.log(window.name,person1.name);
-    var person2 = Person("222",28,"ER");
+    var person1 = Person("111", 29, "se");
+    console.log(window.name, person1.name);
+    var person2 = Person("222", 28, "ER");
     console.log(person2.name);
-      //polygon with safe constructor
-      function Polygon(sides){
-          if(this instanceof Polygon){
-              this.sides = sides;
-              this.getArea = function(){
-                  return 0;
-              }
+    //polygon with safe constructor
+    function Polygon(sides) {
+        if (this instanceof Polygon) {
+            this.sides = sides;
+            this.getArea = function () {
+                return 0;
+            }
 
-          }
-          else{
-              return new Polygon(sides);
-          }
-      }
-      function Rectangle(width,height){
-          Polygon.call(this,2);
-          this.width = width;
-          this.height = height;
-          this.getArea = function(){
-              return this.width * this.height;
-          }
-      }
-      var rect = new Rectangle(5,10);
-      console.log("rect without this",rect.sides);//it will be undefined
-      Rectangle.prototype = new Polygon();
-      var rect1 = new Rectangle(5,10);
-      console.log("rect1 without this",rect1.sides);;//it will be 2;
+        } else {
+            return new Polygon(sides);
+        }
+    }
+
+    function Rectangle(width, height) {
+        Polygon.call(this, 2);
+        this.width = width;
+        this.height = height;
+        this.getArea = function () {
+            return this.width * this.height;
+        }
+    }
+    var rect = new Rectangle(5, 10);
+    console.log("rect without this", rect.sides); //it will be undefined
+    Rectangle.prototype = new Polygon();
+    var rect1 = new Rectangle(5, 10);
+    console.log("rect1 without this", rect1.sides);; //it will be 2;
+    //3.lazy load
+    //return different function
+    function createXHR1() {
+        if (typeof XMLHttpRequest != "undefined") {
+            createXHR1 = function () {
+                return new XMLHttpRequest;
+            }
+        } else if (typeof ActiveXObject != "undefined") {
+            createXHR1 = function () {
+                if (typeof arguments.callee.activeXString != "string") {
+                    var versions = ["MSXML2.XMLHttp.6.0", "MSXML2.XMLHttp.3.0", "MSXML2.XMLHttp"];
+                    var i;
+                    var len;
+                    for (i = 0, len = versions.length; i < len; i++) {
+                        try {
+                            new ActiveXObject(versions[i]);
+                            arguments.callee.activeXString = versions[i];
+                            break;
+                        } catch (ex) {
+                            console.log("init failed");
+                        }
+                    }
+                    return new ActiveXObject(arguments.callee.activeXString);
+                }
+            }
+        } else {
+            createXHR1 = function () {
+                throw new Error("no xhr object available");
+            }
+        }
+        return createXHR1();
+    }
+    //create with iife
+    var createXHR2 = (function () {
+        if (typeof XMLHttpRequest != "undefined") {
+            return function () {
+                return new XMLHttpRequest();
+            }
+        } else if (typeof ActiveXObject != "undefined") {
+            return function () {
+                if (typeof arguments.callee.activeXString != "string") {
+                    var versions = ["MSXML2.XMLHttp.6.0", "MSXML2.XMLHttp.3.0", "MSXML2.XMLHttp"];
+                    var i;
+                    var len;
+                    for (i = 0, len = versions.length; i < len; i++) {
+                        try {
+                            new ActiveXObject(versions[i]);
+                            arguments.callee.activeXString = versions[i];
+                            break;
+                        } catch (ex) {
+                            console.log("init failed");
+                        }
+                    }
+                }
+                return new ActiveXObject(arguments.callee.activeXString);
+            }
+        }
+        else{
+            return function(){
+                throw new Error("No XHR Object available");
+            }
+        }
+    })
 </script>
 
 </html>
