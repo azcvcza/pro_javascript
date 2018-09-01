@@ -9,9 +9,9 @@
 </head>
 
 <body>
-<button id="my-btn">click me</button>
-<p id="message" style="visibility:hidden">helloworld</p>
-<div id="myDiv" style="color:yellow;left:0;"></div>
+    <button id="my-btn">click me</button>
+    <p id="message" style="visibility:hidden">helloworld</p>
+    <div id="myDiv" style="color:yellow;left:0;"></div>
 </body>
 <script>
     //1.checktype
@@ -150,75 +150,136 @@
                 }
                 return new ActiveXObject(arguments.callee.activeXString);
             }
-        }
-        else{
-            return function(){
+        } else {
+            return function () {
                 throw new Error("No XHR Object available");
             }
         }
     })();
-     //4.function binding
-     function bind(func,context){
-         return function(){
-             return func.apply(context,arguments);
-         }
-     }
-       //with curry
-     function bind1(func,context){
-         var args = Array.prototype.slice.call(arguments,2);
-         return function(){
-             var innerArgs = Array.prototype.slice.call(arguments);
-             var finalArgs = args.concat(innerArgs);
-             return func.apply(context,finalArgs);
-         }
-     }
-     //5.高级定时器
-     var btn = document.getElementById("my-btn");
-     btn.onclick = function(){
-         setTimeout(function(){
-             document.getElementById("message").style.visibility = "visible";
-         },250)
-     }
-     
-     setTimeout(function(){
-         var div = document.getElementById("myDiv");
-         var left = parseInt(div.style.left) +5;
-         div.style.left = left+"px";
-         if(left<200){
-             setTimeout(arguments.callee,50);
-         }
-     },50);
-     //6.数组分块
-     function chunk(array,process,context){
-         setTimeout(function(){
-             var item = array.shift();
-             process.call(context,item);
-             if(array.length>0){
-                 setTimeout(arguments.callee,100);
-             }
-         },100)
-     }
-     var data =[12,123,1234,453,436,23,23,5,4123,46,346,5634,2234,345,342];
-     function printValue(item){
-         var div=document.getElementById("myDiv");
-         div.innerHTML += item+"<br>";
-     }
-     chunk(data,printValue);
+    //4.function binding
+    function bind(func, context) {
+        return function () {
+            return func.apply(context, arguments);
+        }
+    }
+    //with curry
+    function bind1(func, context) {
+        var args = Array.prototype.slice.call(arguments, 2);
+        return function () {
+            var innerArgs = Array.prototype.slice.call(arguments);
+            var finalArgs = args.concat(innerArgs);
+            return func.apply(context, finalArgs);
+        }
+    }
+    //5.高级定时器
+    var btn = document.getElementById("my-btn");
+    btn.onclick = function () {
+        setTimeout(function () {
+            document.getElementById("message").style.visibility = "visible";
+        }, 250)
+    }
 
-     //7 函数节流
-     function throttle(method,context){
-         clearTimeout(method.tId);
-         method.tId = setTimeout(function(){
-             method.call(context);
-         },100)
-     }
-     function resizeDiv(){
+    setTimeout(function () {
         var div = document.getElementById("myDiv");
-         div.style.height = div.offsetWidth +"px";
-     }
-     window.onresize = function(){
-         throttle(resiezeDiv);
-     }
+        var left = parseInt(div.style.left) + 5;
+        div.style.left = left + "px";
+        if (left < 200) {
+            setTimeout(arguments.callee, 50);
+        }
+    }, 50);
+    //6.数组分块
+    function chunk(array, process, context) {
+        setTimeout(function () {
+            var item = array.shift();
+            process.call(context, item);
+            if (array.length > 0) {
+                setTimeout(arguments.callee, 100);
+            }
+        }, 100)
+    }
+    var data = [12, 123, 1234, 453, 436, 23, 23, 5, 4123, 46, 346, 5634, 2234, 345, 342];
+
+    function printValue(item) {
+        var div = document.getElementById("myDiv");
+        div.innerHTML += item + "<br>";
+    }
+    chunk(data, printValue);
+
+    //7 函数节流
+    function throttle(method, context) {
+        clearTimeout(method.tId);
+        method.tId = setTimeout(function () {
+            method.call(context);
+        }, 100)
+    }
+
+    function resizeDiv() {
+        var div = document.getElementById("myDiv");
+        div.style.height = div.offsetWidth + "px";
+    }
+    window.onresize = function () {
+        throttle(resiezeDiv);
+    }
+    //8 自定义事件
+    function EventTarget() {
+        this.handlers = {};
+    }
+    EventTarget.prototype = {
+        constructor: EventTarget,
+        addHandler: function (type, handler) {
+            if (typeof this.handlers[type] == "undefined") {
+                this.handlers[type] = [];
+            }
+            this.handlers[type].push(handler);
+        },
+        fire: function (event) {
+            if (!event.target) {
+                event.target = this;
+            }
+            if (this.handlers[event.type] instanceof Array) {
+                var handlers = this.handlers[event.type];
+                for (var i = 0, len = handlers.length; i < len; i++) {
+                    handlers[i](event);
+                }
+            }
+        },
+        removeHandler: function (type, handler) {
+            if (this.handlers[type] instanceof Array) {
+                var handlers = this.handlers[type];
+                for (var i = 0, len = handlers.length; i < len; i++) {
+                    if (handlers[i] === handler) {
+                        break;
+                    }
+                }
+                handlers.splice(i, 1);
+            }
+        }
+    }
+    function handleMessage(event){
+        console.log("message received:"+event.message);
+    }
+    var target = new EventTarget();
+    target.addHandler("message",handleMessage);
+    target.fire({type:"message",message:"Hello world!"});
+    target.removeHandler("message",handleMessage);
+    target.fire({type:"message",message:"Hello world!"});
+
+    function person(name,age){
+        EventTarget.call(this);
+        this.name = name;
+        this.age = age;
+
+    }
+    inheritPrototype(person,EventTarget);
+    person.prototype.say= function(message){
+        this.fire({type:"message",message:message});
+    }
+    function handlePersonMessage(event){
+        console.log(event.target.name+"says:"+event.message);
+    }
+    var p = new person("nico",19);
+    p.addHandler("message",handlePersonMessage);
+    p.say("Hi there");
 </script>
 
 </html>
