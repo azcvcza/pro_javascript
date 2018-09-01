@@ -52,6 +52,47 @@
     check_type(aaa2, isArray);
     check_type(a,isFunction);
     check_type(a1,isFunction);
+    //2. 安全构造函数 in js
+    function Person(name,age,job){
+        if( this instanceof Person){
+            this.name =name;
+            this.age = age;
+            this.job = job;
+        }
+        else{
+            return new Person(name,age,job);
+        }
+    }
+    var person1 = Person("111",29,"se");
+    console.log(window.name,person1.name);
+    var person2 = Person("222",28,"ER");
+    console.log(person2.name);
+      //polygon with safe constructor
+      function Polygon(sides){
+          if(this instanceof Polygon){
+              this.sides = sides;
+              this.getArea = function(){
+                  return 0;
+              }
+
+          }
+          else{
+              return new Polygon(sides);
+          }
+      }
+      function Rectangle(width,height){
+          Polygon.call(this,2);
+          this.width = width;
+          this.height = height;
+          this.getArea = function(){
+              return this.width * this.height;
+          }
+      }
+      var rect = new Rectangle(5,10);
+      console.log("rect without this",rect.sides);//it will be undefined
+      Rectangle.prototype = new Polygon();
+      var rect1 = new Rectangle(5,10);
+      console.log("rect1 without this",rect1.sides);;//it will be 2;
 </script>
 
 </html>
