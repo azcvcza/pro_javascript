@@ -281,8 +281,24 @@
     p.addHandler("message",handlePersonMessage);
     p.say("Hi there");
     //9 拖放
+    EventUtil.addHandler(document,"mousemove",function(event){
+        var myDiv = document.getElementById("myDiv");
+        myDiv.style.left = event.clientX+"px";
+        myDiv.style.top = event.clientY +"px";
+    })
     var DragDrop = function(){
+        var dragging = null;
+        function handleEvent(event){
+            event = EventUil.getEvent(event);
+            var target = EventUil.getTarget(event);
 
+        }
+        switch(event.type){
+            
+        }
+        return {
+
+        }
     }();
 </script>
 
