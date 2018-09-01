@@ -10,6 +10,8 @@
 
 <body>
 <button id="my-btn">click me</button>
+<p id="message" style="visibility:hidden">helloworld</p>
+<div id="myDiv" style="color:yellow;left:0;"></div>
 </body>
 <script>
     //1.checktype
@@ -171,6 +173,40 @@
          }
      }
      //5.高级定时器
+     var btn = document.getElementById("my-btn");
+     btn.onclick = function(){
+         setTimeout(function(){
+             document.getElementById("message").style.visibility = "visible";
+         },250)
+     }
+     
+     setTimeout(function(){
+         var div = document.getElementById("myDiv");
+         var left = parseInt(div.style.left) +5;
+         div.style.left = left+"px";
+         if(left<200){
+             setTimeout(arguments.callee,50);
+         }
+     },50);
+     //6.数组分块
+     function chunk(array,process,context){
+         setTimeout(function(){
+             var item = array.shift();
+             process.call(context,item);
+             if(array.length>0){
+                 setTimeout(arguments.callee,100);
+             }
+         },100)
+     }
+     var data =[12,123,1234,453,436,23,23,5,4123,46,346,5634,2234,345,342];
+     function printValue(item){
+         var div=document.getElementById("myDiv");
+         div.innerHTML += item+"<br>";
+     }
+     chunk(data,printValue);
+
+     //7 函数节流
+     
 </script>
 
 </html>
