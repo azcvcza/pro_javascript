@@ -9,7 +9,7 @@
 </head>
 
 <body>
-
+<button id="my-btn">click me</button>
 </body>
 <script>
     //1.checktype
@@ -154,7 +154,23 @@
                 throw new Error("No XHR Object available");
             }
         }
-    })
+    })();
+     //4.function binding
+     function bind(func,context){
+         return function(){
+             return func.apply(context,arguments);
+         }
+     }
+       //with curry
+     function bind1(func,context){
+         var args = Array.prototype.slice.call(arguments,2);
+         return function(){
+             var innerArgs = Array.prototype.slice.call(arguments);
+             var finalArgs = args.concat(innerArgs);
+             return func.apply(context,finalArgs);
+         }
+     }
+     //5.高级定时器
 </script>
 
 </html>
