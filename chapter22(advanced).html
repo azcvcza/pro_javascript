@@ -322,6 +322,35 @@
             }
         }
     }();
+    //10. 修缮dragdrop
+    var new_DragDrop = function(){
+        var dragging = null;
+        var diffx =0;
+        var diffy = 0;
+        function handleEvent(event){
+            event = EventUtil.getTarget(event);
+            var target = EventUtil.getTarget(event);
+        }
+        switch(event.type){
+            case "mousedown":
+                if(target.className.indexOf("draggable")>-1){
+                    dragging = target;
+                    diffX = event.clientX - target.offsetLeft;
+                    diffY = event.clientY - target.offsetTop;
+                }
+                break;
+            case "mousemove":
+                if(dragging !== null){
+                    dragging.style.left = (event.clientX -diffX)+"px";
+                    dragging.style.top = (event.clientY - diffY)+"px";
+                }
+                break;
+            case "mouseup":
+                 dragging= null;
+                 break;
+        }
+    }
+    //
 </script>
 
 </html>
