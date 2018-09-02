@@ -349,8 +349,41 @@
                  dragging= null;
                  break;
         }
+    }();
+    //11 添加自定义事件
+    var new_2_DragDrop = function(){
+        var dragdrop =new EventTarget();
+        var dragging = null;
+        var diffX = 0;
+        var diffY = 0;
+        function handleEvent(event){
+            event = EventUtil.getTarget(event);
+            var target = EventUtil.getTarget(event);
+        }
+        switch(event.type){
+            case "mousedown":
+                if(target.className.indexOf("draggable")>-1){
+                    dragging = target;
+                    diffX = event.clientX - target.offsetLeft;
+                    diffY = event.clientY - target.offsetTop;
+                    dragdrop.fire({type:"dragstart",target:dragging,x:event.clientX,y:event.clientY});
+                }
+                break;
+            case "mousemove":
+                if(dragging !== null){
+                    dragging.style.left = (event.clientX -diffX)+"px";
+                    dragging.style.top = (event.clientY - diffY)+"px";
+                    dragdrop.fire({type:"drag",target:dragging,x:event.clientX,y:event.clientY});
+
+                }
+                break;
+            case "mouseup":
+            dragdrop.fire({type:"draged",target:dragging,x:event.clientX,y:event.clientY});
+                 dragging= null;
+                 break;
+        }
+
     }
-    //
 </script>
 
 </html>
