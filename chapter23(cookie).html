@@ -79,14 +79,7 @@
     var name2 = localStorage.getItem("fuck");
 
     //indexDB
-    var request,db;
-    request = indexedDB.open("admin");
-    request.onerror = function(event){
-        console.log('something went wrong',event.target.errorCode);
-    }
-    request.onsuccess = function(event){
-        db = event.target.result;
-    }
+    
 
 </script>
 </html>
