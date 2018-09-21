@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>best_practice</title>
+</head>
+<style>
+    .first{
+        background: red;
+    }
+    .second{
+        background: green;
+    }
+</style>
+<body>
+    <div id="element"></div>
+    <p id="error-msg">fuck</p>
+</body>
+
+<script>
+    //变量起名
+    var found =false;
+    var bFound = false;
+    var found1  /*:boolen*/=false;
+
+    //松散耦合
+    var element = document.getElementById("element");
+        element.style.color = 'red';//紧耦合
+        element.className = "first";//松耦合
+
+    //解耦应用逻辑与事件处理
+        //将value -> int 的过程从函数中摘出新建函数;
+    function handleKeyPress(event){
+        event= EventUtil.getEvent(event);
+        if(event.keyCode == 13){
+            var target = EventUtil.getTarget(event);
+            var value = 5*parseInt(target.value);
+            if(value>10){
+                document.getElementById("error-msg").innerHTML="hello result:"+value;
+            }
+        }
+    }
+    //避免全局变量
+        //bad use
+    var naaa = "nick";
+    function sayHello(){
+        console.log(naaa+" hello");
+    }
+        //better
+    var myapp = {
+        name:"fuck",
+        sayHello:function(){
+            console.log(this.name+"fuck");
+        }
+    }
+    console.log(""+myapp.sayHello);
+    //避免与 null 进行比较
+    function sortArray(value){
+        if(value != null){
+            console.log("avoid this");
+        }
+        if(value instanceof Array){
+            console.log("this is better");
+        }
+    }
+    //使用常量
+    var constants  = {
+        INVALID_VALUE_MSG:"invalid value!",
+        INVALID_VALUE_URL:"/errors/invalid.php"
+    }
+    function validateee(value){
+        if(!value){
+            console.log(constants.INVALID_VALUE_MSG);
+            location.href=constants.INVALID_VALUE_URL;
+        }
+    }
+</script>
+<script>
+    //通用事件管理
+    var EventUtil ={
+        addHandler:function(element,type,handler){
+            if(element.addEventListener){
+                element.addEventListener(type,handler,false);
+            }
+            else if(element.attachEvent){
+                element.attachEvent("on"+type,handler);
+            }
+            else{
+                element["on"+type]=handler;
+            }
+        },
+        removeHandler:function(element,type,handler){
+            if(element.removeEventListener){
+                element.removeEventListener(type,handler,false);
+            }
+            else if(element.detachEvent){
+                element.detachEvent("on"+type,handler);
+            }
+            else{
+                element["on"+type]=null;
+            }
+        },
+        getEvent:function(event){
+            return event? event:window.event;
+        },
+        getTarget:function(event){
+            return event.target || event.srcElement;
+        },
+        preventDefault:function(event){
+            if(event.preventDefault){
+                event.preventDefault();
+            }
+            else{
+                event.returnValue = false;
+            }
+        },
+        stopPropagation:function(event){
+            if(event.stopPropagation){
+                event.stopPropagation();
+            }
+            else{
+                event.cancelBubble;
+            }
+        }
+    }
+</script>
+</html>
