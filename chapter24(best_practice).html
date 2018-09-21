@@ -13,10 +13,19 @@
     .second{
         background: green;
     }
+    img{
+        width:200px;
+        height:200px;
+    }
 </style>
 <body>
     <div id="element"></div>
     <p id="error-msg">fuck</p>
+    <ul id="myList"></ul>
+    <img src="image/pic_03.png" alt="">
+    <img src="image/pic_01.png" alt="">
+    <img src="image/pic_07.png" alt="">
+
 </body>
 
 <script>
@@ -76,6 +85,21 @@
             location.href=constants.INVALID_VALUE_URL;
         }
     }
+    //dom 插入优化
+     var list = document.getElementById("myList"),
+         fragment = document.createDocumentFragment(),
+         item,
+         i;
+    for(i=0;i<10;i++){
+        item = document.createElement("li");
+        fragment.appendChild(item);
+        item.appendChild(document.createTextNode("item :"+i));
+    }
+    list.appendChild(item);//使用fragment进行站位
+    //使用InnerHTML 进行设置
+    //...
+    //使用事件代理 访问html collection
+
 </script>
 <script>
     //通用事件管理
