@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>new api</title>
+</head>
+<body>
+    <input type="file" id="files-list">
+    <input type="file" id="files-list1">
+    <p id="output">files-list1 output</p>
+    <p id="progress">progress</p>
+</body>
+<script>
+    //通用事件管理
+    var EventUtil ={
+        addHandler:function(element,type,handler){
+            if(element.addEventListener){
+                element.addEventListener(type,handler,false);
+            }
+            else if(element.attachEvent){
+                element.attachEvent("on"+type,handler);
+            }
+            else{
+                element["on"+type]=handler;
+            }
+        },
+        removeHandler:function(element,type,handler){
+            if(element.removeEventListener){
+                element.removeEventListener(type,handler,false);
+            }
+            else if(element.detachEvent){
+                element.detachEvent("on"+type,handler);
+            }
+            else{
+                element["on"+type]=null;
+            }
+        },
+        getEvent:function(event){
+            return event? event:window.event;
+        },
+        getTarget:function(event){
+            return event.target || event.srcElement;
+        },
+        preventDefault:function(event){
+            if(event.preventDefault){
+                event.preventDefault();
+            }
+            else{
+                event.returnValue = false;
+            }
+        },
+        stopPropagation:function(event){
+            if(event.stopPropagation){
+                event.stopPropagation();
+            }
+            else{
+                event.cancelBubble;
+            }
+        }
+    }
+    //request animation Frame
+    /*
+    (function(){
+        function draw(timestamp){
+            var drawStart = (timestamp || Date.now());
+            var diff = drawStart-startTime;
+            startTime = drawStart;
+            requestAnimationFrame(draw);
+        }
+        var requestAnimationFrame = window.webkitRequestAnimationFrame;
+        var startTime = Date.now();
+        requestAnimationFrame(draw);
+    })();
+    */
+    //file api
+    /*
+    var filelist = document.getElementById("files-list");
+    EventUtil.addHandler(filelist,"change",function(event){
+        var files = EventUtil.getTarget(event).files;
+        var i =0;
+        var len = files.length;
+        while (i<len){
+            console.log(files[i].name + " ( "+ files[i].type+" , "+files[i].size+ " bytes)");
+            if(len > 100000){
+                console.log("file too big");
+            }
+        }
+    })*/
+    //filereader
+
+    var filelist1 = document.getElementById("files-list1");
+    EventUtil.addHandler(filelist1,"change",function(event){
+        var info ="",
+            output = document.getElementById("output"),
+            progress = document.getElementById("progress"),
+            files = EventUtil.getTarget(event).files,
+            type = "default",
+            reader = new FileReader();
+            if(/image/.test(files[0].type)){
+                reader.readAsDataURL(files[0]);
+                type = "image";
+            }
+            else{
+                reader.readAsText(files[0]);
+                type = "text";
+            }
+            reader.onerror = function(){
+                output.innerHTML = "could not read file ,error code is"+ reader.error.code;
+            };
+            reader.onprogress = function(event){
+                if(event.lengthComputable){
+                    progress.innerHTML = event.loaded + "/" +event.total;
+                }
+            };
+            reader.onload = function(){
+                var html = "";
+                switch(type){
+                    case "image":
+                        html = "<img src=\""+reader.result +"\">";
+                        break;
+                    case "text":
+                        html = reader.result;
+                        break;
+                }
+                output.innerHTML = html;
+            }
+
+    })
+</script>
+<script>
+    
+</script>
+</html>
